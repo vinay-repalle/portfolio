@@ -1,0 +1,128 @@
+.term__out {
+  flex: 1;
+  min-height: 90px;
+  padding: 12px 16px;
+  overflow-y: auto;
+  font: 400 13px/1.7 var(--font-mono);
+  overscroll-behavior: contain;
+}
+
+.line {
+  overflow-wrap: anywhere;
+}
+
+.line--cmd {
+  margin-top: 6px;
+  color: var(--ink);
+}
+
+.line--cmd::before {
+  content: '❯ ';
+  color: var(--accent);
+}
+
+.line--muted {
+  color: var(--muted);
+}
+
+.line--ok,
+.line--accent {
+  color: var(--accent);
+}
+
+.line--err {
+  color: #ff7b72;
+}
+
+.line--row {
+  display: grid;
+  grid-template-columns: 14ch 1fr;
+  gap: 1ch;
+}
+
+.line--commit {
+  display: grid;
+  grid-template-columns: 8ch 9ch 1fr;
+  gap: 1ch;
+  width: 100%;
+  padding: 1px 6px;
+  margin-left: -6px;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.line--commit:hover,
+.line--commit:focus-visible {
+  background: rgb(var(--ink-rgb) / 0.06);
+}
+
+.term__input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  border-top: 1px solid var(--line);
+  font: 500 14px var(--font-mono);
+}
+
+.term__input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  caret-color: var(--accent);
+}
+
+.term__input input::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.term__suggest {
+  max-height: 220px;
+  padding: 6px;
+  overflow-y: auto;
+  border-top: 1px solid var(--line);
+}
+
+.sugg {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font: 400 13px var(--font-mono);
+  text-align: left;
+}
+
+.sugg span:first-child {
+  white-space: nowrap;
+}
+
+.sugg span:last-child {
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sugg.is-active {
+  background: rgb(var(--accent-rgb) / 0.12);
+}
+
+.sugg.is-active span:first-child {
+  color: var(--accent);
+}
+
+@media (max-width: 759px) {
+  .line--row,
+  .line--commit {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .sugg span:last-child {
+    display: none;
+  }
+}

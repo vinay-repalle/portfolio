@@ -1,0 +1,339 @@
+.graph {
+  position: relative;
+  z-index: 3;
+  min-height: 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.graph__svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+/* grid + future */
+.graph__grid line {
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 1 5;
+}
+
+.graph__grid text,
+.graph__future-label {
+  fill: var(--muted);
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.08em;
+}
+
+.graph__future-label {
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.graph__future {
+  fill: url(#hatch);
+  opacity: 0.55;
+}
+
+.graph__hatch {
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.graph__now {
+  stroke: var(--muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  opacity: 0.6;
+}
+
+/* branches */
+.branch {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.branch--ghost {
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 7;
+  opacity: 0.5;
+}
+
+.branch--solid {
+  stroke: currentColor;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.branch-label {
+  fill: var(--muted);
+  font: 500 12px var(--font-mono);
+  opacity: 0.35;
+  transition: opacity 0.5s;
+}
+
+.branch-label.is-live {
+  opacity: 1;
+}
+
+.branch-label.is-merged {
+  opacity: 0.55;
+}
+
+.is-compact .branch-label {
+  font-size: 10px;
+}
+
+/* commits */
+.node {
+  outline: none;
+}
+
+.node__hit {
+  fill: transparent;
+}
+
+.node__body {
+  transform: scale(0.6);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.55s var(--ease-spring);
+}
+
+.node.is-past .node__body {
+  transform: scale(1);
+}
+
+.node:hover .node__body,
+.node:focus-visible .node__body,
+.node.is-selected .node__body {
+  transform: scale(1.4);
+}
+
+.node .fill {
+  fill: var(--bg);
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 3;
+}
+
+.node .ring {
+  fill: var(--bg);
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 3;
+}
+
+.node.is-past .fill {
+  fill: var(--c);
+  stroke: var(--bg);
+  stroke-width: 2;
+  stroke-dasharray: none;
+}
+
+.node.is-past .ring {
+  stroke: var(--c);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+
+.node.is-past .ring--thick {
+  stroke-width: 3.5;
+}
+
+.node__halo {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.node.is-head .node__halo,
+.node.is-selected .node__halo {
+  animation: halo 1.8s var(--ease-out) infinite;
+}
+
+.node:focus-visible .node__halo {
+  opacity: 1;
+  stroke-dasharray: 3 3;
+}
+
+@keyframes halo {
+  from { transform: scale(0.6); opacity: 0.9; }
+  to { transform: scale(1.9); opacity: 0; }
+}
+
+.node__label {
+  fill: var(--ink);
+  font: 500 12px var(--font-sans);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  transition: opacity 0.4s;
+}
+
+.node.is-future .node__label {
+  fill: var(--muted);
+  opacity: 0.45;
+  letter-spacing: 0.1em;
+}
+
+.node.is-head .node__label,
+.node.is-selected .node__label {
+  fill: var(--c);
+  font-weight: 600;
+}
+
+/* the future ghost commit */
+.ghost {
+  outline: none;
+}
+
+.ghost__ring {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 12s linear infinite;
+}
+
+.ghost:hover .ghost__ring,
+.ghost:focus-visible .ghost__ring {
+  fill: rgb(var(--accent-rgb) / 0.15);
+}
+
+.ghost__plus {
+  fill: var(--accent);
+  font: 600 13px var(--font-mono);
+  pointer-events: none;
+}
+
+.ghost__label {
+  fill: var(--accent);
+  font: 500 12px var(--font-mono);
+  opacity: 0.85;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* playhead */
+.playhead__line {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+.playhead__glow {
+  stroke: rgb(var(--accent-rgb) / 0.22);
+  stroke-width: 12;
+}
+
+.playhead-pill {
+  position: absolute;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--bg);
+  font: 600 11px var(--font-mono);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 0 26px rgb(var(--accent-rgb) / 0.5);
+}
+
+/* hover tooltip */
+.tip {
+  position: absolute;
+  z-index: 10;
+  width: max-content;
+  max-width: 300px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgb(var(--surface-rgb) / 0.94);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 40px -18px rgb(0 0 0 / 0.7);
+  transform: translate(-50%, calc(-100% - 24px));
+  pointer-events: none;
+  animation: tip-in 0.25s var(--ease-out) both;
+}
+
+@keyframes tip-in {
+  from { opacity: 0; translate: 0 6px; }
+}
+
+.tip__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  color: var(--muted);
+  font: 500 11px var(--font-mono);
+}
+
+.tip__hash {
+  color: var(--c);
+}
+
+.tip__msg {
+  margin: 6px 0;
+  color: var(--ink);
+  font: 500 13px/1.45 var(--font-mono);
+}
+
+.tip__foot {
+  color: var(--muted);
+  font: 400 11px var(--font-mono);
+}
+
+/* hint */
+.graph__hint {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 0.6s;
+  animation: hint-float 3s ease-in-out infinite;
+}
+
+.graph__hint i {
+  font-style: normal;
+  opacity: 0.4;
+}
+
+.graph__hint span:not(.graph__hint-txt) {
+  color: var(--ink);
+}
+
+.graph__hint.is-gone {
+  opacity: 0;
+}
+
+@keyframes hint-float {
+  50% { translate: 0 3px; }
+}
+
+@media (max-width: 759px) {
+  .graph__hint {
+    display: none;
+  }
+}

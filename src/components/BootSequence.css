@@ -1,0 +1,85 @@
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: #030505;
+  color: #a8f5c8;
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1.35vw, 15px);
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.65s cubic-bezier(0.77, 0, 0.18, 1);
+}
+
+.boot.is-leaving {
+  clip-path: inset(0 0 100% 0);
+}
+
+.boot__inner {
+  width: min(780px, 92vw);
+  overflow: hidden;
+}
+
+.boot__line {
+  white-space: pre;
+  line-height: 1.8;
+  opacity: 0.8;
+}
+
+.boot__line--cmd {
+  color: #fff;
+  opacity: 1;
+}
+
+.boot__prompt {
+  margin-right: 1ch;
+  color: #39ff88;
+}
+
+.boot__typed {
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  vertical-align: bottom;
+  animation: type 0.5s steps(var(--n)) forwards;
+}
+
+.boot__bar {
+  display: inline-block;
+  width: 18ch;
+  height: 0.7em;
+  margin: 0 1ch;
+  border: 1px solid currentColor;
+  vertical-align: middle;
+}
+
+.boot__bar i {
+  display: block;
+  height: 100%;
+  background: #39ff88;
+}
+
+.boot__dim {
+  opacity: 0.6;
+}
+
+.boot__caret {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.15em;
+  margin-top: 4px;
+  background: #39ff88;
+  animation: blink 1s steps(1) infinite;
+}
+
+.boot__skip {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  translate: -50% 0;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
