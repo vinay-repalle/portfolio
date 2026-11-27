@@ -280,6 +280,26 @@ export const commits = [
     links: [{ label: 'source', url: `${GH}/market-intelligence-agents` }],
   },
   {
+    id: 'saferun',
+    hash: '5afe210',
+    branch: 'side',
+    date: '2026-10-30', // personal repo vinay-repalle/saferun
+    kind: 'milestone',
+    label: 'SafeRun',
+    title: 'SafeRun — check AI-generated code before you run it',
+    message: 'release: saferun-cli on PyPI',
+    summary:
+      'A CLI that scans AI-generated code (Semgrep and an offline OSV dependency scan) inside a locked-down analyzer container, then runs it only in a hardened Docker sandbox: no network, non-root, read-only and resource-limited. Signed analyzer images; published on PyPI as saferun-cli, with its own website.',
+    added: ['Hardened Docker sandbox', 'PASS / WARNING / FAIL verdicts', 'Published on PyPI'],
+    removed: ['Running random scripts and hoping'],
+    stack: ['Python', 'Docker', 'Semgrep', 'OSV-Scanner', 'cosign'],
+    links: [
+      { label: 'website', url: 'https://safe-run.netlify.app' },
+      { label: 'PyPI', url: 'https://pypi.org/project/saferun-cli/' },
+      { label: 'source', url: `${GH}/saferun` },
+    ],
+  },
+  {
     id: 'synccraft',
     hash: '5c7c2af',
     branch: 'side',
@@ -395,26 +415,6 @@ export const commits = [
     removed: [],
     stack: ['Python', 'PostgreSQL', 'Redis', 'Docker'],
     links: [{ label: 'source', url: `${GH_WORK}/Sentinel-AI` }],
-  },
-  {
-    id: 'saferun',
-    hash: '5afe210',
-    branch: 'work',
-    date: '2026-10-28',
-    kind: 'milestone',
-    label: 'SafeRun',
-    title: 'SafeRun — check AI-generated code before you run it',
-    message: 'release: saferun-cli on PyPI',
-    summary:
-      'A CLI that scans AI-generated code (Semgrep and an offline OSV dependency scan) inside a locked-down analyzer container, then runs it only in a hardened Docker sandbox: no network, non-root, read-only and resource-limited. Signed analyzer images; published on PyPI as saferun-cli.',
-    added: ['Hardened Docker sandbox', 'PASS / WARNING / FAIL verdicts', 'Published on PyPI'],
-    removed: ['Running random scripts and hoping'],
-    stack: ['Python', 'Docker', 'Semgrep', 'OSV-Scanner', 'cosign'],
-    links: [
-      { label: 'website', url: 'https://safe-run.netlify.app' },
-      { label: 'PyPI', url: 'https://pypi.org/project/saferun-cli/' },
-      { label: 'source', url: `${GH}/saferun` },
-    ],
   },
   {
     id: 'pramaan',
