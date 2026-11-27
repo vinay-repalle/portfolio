@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { tour } from './data/portfolio.js'
-import { COMMIT, COMMITS, ERAS, T_NOW, T_START, eraIndexAt, lastCommitAt } from './lib/story.js'
+import { COMMIT, COMMITS, ERAS, T_NOW, T_START, U_NOW, eraIndexAt, lastCommitAt, tAt, uAt } from './lib/story.js'
 import { applyPalette, paletteAt } from './lib/theme.js'
 import { clamp, fmtMonth } from './lib/utils.js'
 import { sound } from './lib/sound.js'
@@ -18,7 +18,10 @@ import CommandPalette from './components/CommandPalette.jsx'
 import PullRequest from './components/PullRequest.jsx'
 import Tour, { TourPrompt } from './components/Tour.jsx'
 
-const WHEEL_YEARS_PER_PX = 0.0022
+// motion is measured along the (dilated) screen axis u, not in calendar time,
+// so busy months don't flash past and quiet years don't drag
+const WHEEL_U_PER_PX = 0.0003
+const PLAY_SECONDS = 12 // a full replay, start to today
 const INTRO_SECONDS = 3.8
 const TOUR = tour.steps
 
@@ -54,8 +57,8 @@ export default function App() {
   const velocityRef = useRef(0) // read + reset by the warp field each frame
   const tween = useRef(null)
   const tweenKind = useRef(null)
-  const wheelTarget = useRef(T_START)
-  const proxy = useRef({ t: T_START })
+  const wheelTarget = useRef(0) // in u
+  const proxy = useRef({ u: 0 })
 
   const [playing, setPlaying] = useState(false)
   const [selectedId, setSelectedId] = useState(null)
@@ -79,7 +82,7 @@ export default function App() {
     const t = clamp(next, T_START, T_NOW)
     const prev = timeRef.current
     if (Math.abs(t - prev) < 1e-7) return
-    velocityRef.current += t - prev
+    velocityRef.current += uAt(t) - uAt(prev) // on-screen speed drives the warp streaks
 
     const yPrev = Math.floor(prev + 1e-6)
     const yNext = Math.floor(t + 1e-6)
@@ -111,15 +114,17 @@ export default function App() {
         onComplete?.()
         return
       }
-      proxy.current.t = timeRef.current
-      const dist = Math.abs(t - timeRef.current)
+      const u1 = uAt(t)
+      proxy.current.u = uAt(timeRef.current)
+      const dist = Math.abs(u1 - proxy.current.u)
       tweenKind.current = kind
       tween.current = gsap.to(proxy.current, {
-        t,
-        duration: duration ?? clamp(0.4 + dist * 0.16, 0.4, 1.5),
+        u: u1,
+        duration: duration ?? clamp(0.4 + dist * 1.8, 0.4, 1.5),
         ease,
-        onUpdate: () => setTime(proxy.current.t),
+        onUpdate: () => setTime(tAt(proxy.current.u)),
         onComplete: () => {
+          setTime(t) // land exactly on the target
           tween.current = null
           tweenKind.current = null
           onComplete?.()
@@ -135,7 +140,7 @@ export default function App() {
     setTouched(true)
     const forward = () =>
       travelTo(T_NOW, {
-        duration: Math.max(0.6, (T_NOW - timeRef.current) * 1.15),
+        duration: Math.max(0.6, (U_NOW - uAt(timeRef.current)) * PLAY_SECONDS),
         ease: 'none',
         kind: 'play',
         onComplete: () => {
@@ -239,11 +244,11 @@ export default function App() {
       if (e.target.closest?.('[data-scrollable]')) return
       const d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX
       const px = e.deltaMode === 1 ? d * 18 : e.deltaMode === 2 ? d * 400 : d
-      const base = tweenKind.current === 'wheel' ? wheelTarget.current : timeRef.current
-      wheelTarget.current = clamp(base + px * WHEEL_YEARS_PER_PX, T_START, T_NOW)
+      const base = tweenKind.current === 'wheel' ? wheelTarget.current : uAt(timeRef.current)
+      wheelTarget.current = clamp(base + px * WHEEL_U_PER_PX, 0, U_NOW)
       setPlaying(false)
       setTouched(true)
-      travelTo(wheelTarget.current, { duration: 0.55, ease: 'power3.out', kind: 'wheel' })
+      travelTo(tAt(wheelTarget.current), { duration: 0.55, ease: 'power3.out', kind: 'wheel' })
     }
     window.addEventListener('wheel', onWheel, { passive: true })
     return () => window.removeEventListener('wheel', onWheel)

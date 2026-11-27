@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { futureCommit } from '../data/portfolio.js'
-import { BRANCH, BRANCHES, COMMIT, COMMITS, MAIN, T_END, T_NOW, T_START, YEARS, lastCommitAt } from '../lib/story.js'
-import { clamp, fmtMonth } from '../lib/utils.js'
+import { BRANCH, BRANCHES, COMMIT, COMMITS, MAIN, T_END, T_NOW, T_START, YEARS, lastCommitAt, tAt, uAt } from '../lib/story.js'
+import { clamp, fmtDate, fmtMonth } from '../lib/utils.js'
 import './GitGraph.css'
 
 const PAD_T = 58
-const PAD_B = 58
+const PAD_B = 68
 const T_GHOST = T_NOW + (T_END - T_NOW) * 0.55
 
 function NodeShape({ kind }) {
@@ -47,10 +47,9 @@ export default function GitGraph({ time, layout, selectedId, showHint, onSelect,
 
   const { w, h } = size
   const { gl, gr, compact } = layout
-  const span = T_END - T_START
   const innerW = Math.max(1, w - gl - gr)
-  const curve = compact ? 22 : 44
-  const x = (t) => gl + ((t - T_START) / span) * innerW
+  const curve = compact ? 22 : 40
+  const x = (t) => gl + uAt(t) * innerW
   const laneGap = (h - PAD_T - PAD_B) / Math.max(1, BRANCHES.length - 1)
   const laneY = (lane) => PAD_T + lane * laneGap
   const yMain = laneY(MAIN.lane)
@@ -94,7 +93,7 @@ export default function GitGraph({ time, layout, selectedId, showHint, onSelect,
       e.currentTarget.setPointerCapture(d.id)
       onScrubStart()
     }
-    if (d.active) onScrub(d.t0 - dx * (span / innerW))
+    if (d.active) onScrub(tAt(uAt(d.t0) - dx / innerW))
   }
   const onPointerUp = () => {
     drag.current = null
@@ -236,7 +235,7 @@ export default function GitGraph({ time, layout, selectedId, showHint, onSelect,
               +
             </text>
             {!compact && (
-              <text className="ghost__label" y={-20} textAnchor="middle">
+              <text className="ghost__label" y={31} textAnchor="middle">
                 {futureCommit.label}
               </text>
             )}
@@ -268,7 +267,7 @@ export default function GitGraph({ time, layout, selectedId, showHint, onSelect,
           <div className="tip__head">
             <span className="tip__hash">{hover.hash}</span>
             <span>
-              {BRANCH[hover.branch].name} · {fmtMonth(hover.t)}
+              {BRANCH[hover.branch].name} · {fmtDate(hover.date)}
             </span>
           </div>
           <div className="tip__msg">{hover.message}</div>

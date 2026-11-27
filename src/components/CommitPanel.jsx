@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef } from 'react'
 import { profile } from '../data/portfolio.js'
 import { BRANCH, COMMITS } from '../lib/story.js'
-import { fmtMonth } from '../lib/utils.js'
+import { fmtDate } from '../lib/utils.js'
 import CommitArt from './CommitArt.jsx'
 import './CommitPanel.css'
 
@@ -53,7 +53,7 @@ function CommitPanel({ commit, onClose, onStep }) {
                 <div>
                   Author: {profile.name} &lt;{profile.handle}@users.noreply.github.com&gt;
                 </div>
-                <div>Date:&nbsp;&nbsp; {fmtMonth(c.t)}</div>
+                <div>Date:&nbsp;&nbsp; {fmtDate(c.date)}</div>
                 <div className="panel__msg">{c.message}</div>
               </div>
 

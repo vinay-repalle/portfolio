@@ -2,10 +2,20 @@ export const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-/** 'YYYY-MM' → decimal year (2021-07 → 2021.5). Time is a decimal year everywhere. */
-export function toT(ym) {
-  const [y, m = 1] = String(ym).split('-').map(Number)
-  return y + (m - 1) / 12
+/**
+ * 'YYYY-MM' or 'YYYY-MM-DD' → decimal year (2021-07 → 2021.5).
+ * Time is a decimal year everywhere. Days use 1/372 (12 × 31) so a date
+ * never spills into the next month.
+ */
+export function toT(date) {
+  const [y, m = 1, d = 1] = String(date).split('-').map(Number)
+  return y + (m - 1) / 12 + (d - 1) / 372
+}
+
+/** 'YYYY-MM-DD' → 'Oct 28, 2026' · 'YYYY-MM' → 'Oct 2026' */
+export function fmtDate(date) {
+  const [y, m = 1, d] = String(date).split('-').map(Number)
+  return d ? `${MONTHS[m - 1]} ${d}, ${y}` : `${MONTHS[m - 1]} ${y}`
 }
 
 /** decimal year → 'Mar 2022' */

@@ -74,10 +74,10 @@ export default function WarpField({ velocityRef, apiRef }) {
     }
 
     const frame = () => {
-      // velocity = years travelled since the last frame
+      // velocity = share of the timeline crossed since the last frame
       const v = velocityRef.current
       velocityRef.current = 0
-      const target = reduce ? 0 : clamp(v * 2600, -95, 95)
+      const target = reduce ? 0 : clamp(v * 22000, -95, 95)
       speed += (target - speed) * 0.16
       mouse.x += (mouse.tx - mouse.x) * 0.05
       mouse.y += (mouse.ty - mouse.y) * 0.05

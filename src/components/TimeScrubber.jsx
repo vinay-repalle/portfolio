@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react'
-import { COMMITS, ERAS, T_END, T_NOW, T_START, YEARS } from '../lib/story.js'
+import { COMMITS, ERAS, T_NOW, T_START, YEARS, tAt, uAt } from '../lib/story.js'
 import { fmtMonth } from '../lib/utils.js'
 import './TimeScrubber.css'
 
-const SPAN = T_END - T_START
-const pct = (t) => `${((t - T_START) / SPAN) * 100}%`
+// same dilated axis as the graph, so the track lines up with it exactly
+const pct = (t) => `${uAt(t) * 100}%`
 
 const PlayIcon = () => (
   <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -25,7 +25,7 @@ export default function TimeScrubber({ time, layout, playing, onTogglePlay, onSc
 
   const tFromX = (clientX) => {
     const r = trackRef.current.getBoundingClientRect()
-    return T_START + ((clientX - r.left) / r.width) * SPAN
+    return tAt((clientX - r.left) / r.width)
   }
 
   const down = (e) => {
@@ -82,7 +82,7 @@ export default function TimeScrubber({ time, layout, playing, onTogglePlay, onSc
               <span
                 key={e.at}
                 title={e.title}
-                style={{ left: pct(e.t), width: `${((end - e.t) / SPAN) * 100}%`, background: e.accent }}
+                style={{ left: pct(e.t), width: `${(uAt(end) - uAt(e.t)) * 100}%`, background: e.accent }}
               />
             )
           })}

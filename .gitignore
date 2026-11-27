@@ -7,3 +7,6 @@ dist
 .env.*
 .vscode/*
 !.vscode/extensions.json
+
+# personal files that must never be pushed (resume source, etc.)
+private/

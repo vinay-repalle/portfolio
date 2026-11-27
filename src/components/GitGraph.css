@@ -115,6 +115,18 @@
   transform: scale(1.4);
 }
 
+/* phones: smaller dots so busy months don't merge into one blob */
+.is-compact .node .node__body {
+  transform: scale(0.45);
+}
+.is-compact .node.is-past .node__body {
+  transform: scale(0.72);
+}
+.is-compact .node.is-selected .node__body,
+.is-compact .node:focus-visible .node__body {
+  transform: scale(1.05);
+}
+
 .node .fill {
   fill: var(--bg);
   stroke: var(--muted);
