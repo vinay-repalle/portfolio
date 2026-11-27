@@ -22,7 +22,7 @@ export const profile = {
   email: 'repallevinay13@gmail.com',
   socials: [
     { label: 'GitHub', url: 'https://github.com/vinay-repalle' },
-    // { label: 'LinkedIn', url: '' },   // add when ready
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/vinay-repalle2' },
     // { label: 'Resume', url: '' },     // add the PDF link when ready
   ],
   skills: [
@@ -236,7 +236,7 @@ export const commits = [
     title: 'CDPC — Career Development & Placement Cell',
     message: 'feat(cdpc): one home for placements, alumni and sessions',
     summary:
-      'A full-stack platform for the placement cell at RGUKT Nuzvid: secure logins for admins, faculty, alumni and students; placement drives; an automated NOC request and approval workflow; alumni mentorship sessions; notifications; and a statistics dashboard with exports. (Private repository — screenshots coming soon.)',
+      'A full-stack platform built for the placement cell at RGUKT Nuzvid and handed over to our faculty guide: secure logins for admins, faculty, alumni and students; placement drives; an automated NOC request and approval workflow; alumni mentorship sessions; notifications; and a statistics dashboard with exports. (Private repository — screenshots coming soon.)',
     added: [
       'OTP login, protected routes, admin approvals',
       'NOC request & approval workflow',
