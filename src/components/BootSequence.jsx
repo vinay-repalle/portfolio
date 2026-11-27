@@ -7,8 +7,8 @@ import './BootSequence.css'
 const SCRIPT = [
   { at: 0, type: 'cmd', text: `git clone git@github.com:${profile.handle}/life.git` },
   { at: 620, text: `Cloning into '${profile.firstName.toLowerCase()}'...` },
-  { at: 780, text: 'remote: Enumerating objects: 2847, done.' },
-  { at: 930, text: 'remote: Counting objects: 100% (2847/2847), done.' },
+  { at: 780, text: 'remote: Enumerating objects: 2731, done.' },
+  { at: 930, text: 'remote: Counting objects: 100% (2731/2731), done.' },
   { at: 1080, type: 'progress', text: 'Receiving objects' },
   { at: 1900, text: 'Resolving deltas: 100% (1337/1337), done.' },
   { at: 2150, type: 'cmd', text: 'git log --graph --all --since=2020' },
