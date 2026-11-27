@@ -18,7 +18,7 @@ export const profile = {
   tagline:
     'I build full-stack web apps and AI tools — real-time games, placement platforms, RAG pipelines and code sandboxes.',
   location: 'Chennai, India',
-  status: 'Trainee at Ampera · open to opportunities', // CHECK
+  status: 'Future Software Developer (Trainee) at Ampera',
   email: 'repallevinay13@gmail.com',
   socials: [
     { label: 'GitHub', url: 'https://github.com/vinay-repalle' },
@@ -50,7 +50,7 @@ export const timeline = {
  * color: a hex value, or 'ink' to follow the current era's text color.
  */
 export const branches = [
-  { id: 'edu', name: 'education', color: '#8ab4ff', forkAt: '2020-07', mergeAt: '2026-05' }, // CHECK graduation month
+  { id: 'edu', name: 'education', color: '#8ab4ff', forkAt: '2020-07', mergeAt: '2026-05' }, // graduated May 2026
   { id: 'main', name: 'main', color: 'ink' },
   { id: 'work', name: 'ampera', color: '#5eead4', forkAt: '2026-08' },
   { id: 'side', name: 'side-projects', color: '#ff7eb6', forkAt: '2025-03' },
@@ -86,7 +86,7 @@ export const commits = [
     id: 'graduated',
     hash: 'd4e8f0a',
     branch: 'main',
-    date: '2026-05', // CHECK
+    date: '2026-05', // graduated May 2026
     kind: 'merge',
     label: 'Graduated',
     title: "Merge branch 'education' into main",
@@ -379,10 +379,10 @@ export const commits = [
     date: '2026-08-04', // CHECK exact day
     kind: 'job',
     label: 'Ampera',
-    title: 'Trainee — Ampera, Chennai', // CHECK title
+    title: 'Future Software Developer (Trainee) — Ampera, Chennai',
     message: 'feat(work): first day at Ampera',
     summary:
-      'Joined Ampera in Chennai as a trainee. Learning by building: AI applications, agents and RAG systems, production-grade backends — and shipping them with a team.',
+      'Joined Ampera in Chennai as a Future Software Developer trainee. Learning by building: AI applications, agents and RAG systems, production-grade backends — and shipping them with a team.',
     added: ['Python & FastAPI', 'LangGraph, RAG & Gemini', 'Docker and code reviews'],
     removed: ['The student ID card'],
     stack: [],
