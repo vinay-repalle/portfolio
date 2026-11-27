@@ -10,6 +10,7 @@ const Y1 = Math.floor(T_NOW)
 
 const BASE = [
   { cmd: 'help', desc: 'list everything you can type' },
+  { cmd: 'tour', desc: 'a guided walkthrough of this site' },
   { cmd: 'whoami', desc: 'the short version of me' },
   { cmd: 'git log', desc: 'every commit, newest first' },
   { cmd: 'ls skills', desc: 'the tools I reach for' },
@@ -28,7 +29,7 @@ const WELCOME = [
   { t: 'muted', text: "type 'help' to begin · ↑↓ pick · tab complete · esc close" },
 ]
 
-function CommandPalette({ open, onClose, actions }) {
+function CommandPalette({ open, onClose, actions, demo }) {
   const [input, setInput] = useState('')
   const [lines, setLines] = useState(WELCOME)
   const [sel, setSel] = useState(0)
@@ -94,6 +95,8 @@ function CommandPalette({ open, onClose, actions }) {
       say('muted', 'click any commit to check it out')
     } else if (['ls skills', 'skills', 'ls'].includes(lc)) {
       profile.skills.forEach((g) => out.push({ t: 'row', a: `${g.group}/`, b: g.items.join(' · ') }))
+    } else if (lc === 'tour' || lc === 'guide') {
+      actions.tour()
     } else if (lc === 'play' || lc === 'replay') {
       actions.play()
     } else if (['now', 'git checkout main', 'git switch main', 'cd ~', 'cd'].includes(lc)) {
@@ -153,6 +156,31 @@ function CommandPalette({ open, onClose, actions }) {
     setLines((prev) => [...prev, ...out])
     setInput('')
   }
+
+  // The tour can ask the terminal to type and run a command by itself.
+  const execRef = useRef(exec)
+  execRef.current = exec
+  const demoDone = useRef(null)
+  useEffect(() => {
+    if (!open || !demo || demoDone.current === demo.id) return
+    let i = 0
+    let runTimer = 0
+    const typer = setInterval(() => {
+      i += 1
+      setInput(demo.cmd.slice(0, i))
+      if (i >= demo.cmd.length) {
+        clearInterval(typer)
+        runTimer = setTimeout(() => {
+          demoDone.current = demo.id
+          execRef.current(demo.cmd)
+        }, 380)
+      }
+    }, 80)
+    return () => {
+      clearInterval(typer)
+      clearTimeout(runTimer)
+    }
+  }, [open, demo])
 
   const onKeyDown = (e) => {
     if (e.key === 'Escape') {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
-import { COMMIT, COMMITS, T_NOW, T_START, lastCommitAt } from './lib/story.js'
+import { tour } from './data/portfolio.js'
+import { COMMIT, COMMITS, ERAS, T_NOW, T_START, eraIndexAt, lastCommitAt } from './lib/story.js'
 import { applyPalette, paletteAt } from './lib/theme.js'
 import { clamp, fmtMonth } from './lib/utils.js'
 import { sound } from './lib/sound.js'
@@ -15,8 +16,29 @@ import TimeScrubber from './components/TimeScrubber.jsx'
 import CommitPanel from './components/CommitPanel.jsx'
 import CommandPalette from './components/CommandPalette.jsx'
 import PullRequest from './components/PullRequest.jsx'
+import Tour, { TourPrompt } from './components/Tour.jsx'
 
 const WHEEL_YEARS_PER_PX = 0.0022
+const INTRO_SECONDS = 3.8
+const TOUR = tour.steps
+
+// localStorage can throw (private mode, blocked storage) — never let it break the page
+const store = {
+  get: (k) => {
+    try {
+      return localStorage.getItem(k)
+    } catch {
+      return null
+    }
+  },
+  set: (k, v) => {
+    try {
+      localStorage.setItem(k, v)
+    } catch {
+      /* ignore */
+    }
+  },
+}
 
 export default function App() {
   const layout = useLayout()
@@ -42,6 +64,11 @@ export default function App() {
   const [soundOn, setSoundOn] = useState(false)
   const [shaking, setShaking] = useState(false)
   const warpApi = useRef(null)
+
+  // guided tour
+  const [tourIndex, setTourIndex] = useState(null)
+  const [tourSeen, setTourSeen] = useState(() => store.get('tour:seen') === '1')
+  const [demo, setDemo] = useState(null) // a command the terminal types by itself
 
   // re-theme the whole page for the current moment, before paint
   useLayoutEffect(() => {
@@ -199,8 +226,8 @@ export default function App() {
     if (!booted) return
     setIntroDone(false)
     const id = setTimeout(
-      () => travelTo(T_NOW, { duration: 4.6, ease: 'power2.inOut', onComplete: () => setIntroDone(true) }),
-      350,
+      () => travelTo(T_NOW, { duration: INTRO_SECONDS, ease: 'power2.inOut', onComplete: () => setIntroDone(true) }),
+      300,
     )
     return () => clearTimeout(id)
   }, [booted, travelTo])
@@ -208,7 +235,7 @@ export default function App() {
   // ── scroll wheel = time travel ──
   useEffect(() => {
     const onWheel = (e) => {
-      if (!booted || selectedId || paletteOpen || prOpen) return
+      if (!booted || selectedId || paletteOpen || prOpen || tourIndex != null) return
       if (e.target.closest?.('[data-scrollable]')) return
       const d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX
       const px = e.deltaMode === 1 ? d * 18 : e.deltaMode === 2 ? d * 400 : d
@@ -220,12 +247,13 @@ export default function App() {
     }
     window.addEventListener('wheel', onWheel, { passive: true })
     return () => window.removeEventListener('wheel', onWheel)
-  }, [booted, selectedId, paletteOpen, prOpen, travelTo])
+  }, [booted, selectedId, paletteOpen, prOpen, tourIndex, travelTo])
 
   // ── keyboard ──
   useEffect(() => {
     const onKey = (e) => {
       const k = e.key
+      if (tourIndex != null) return // the tour handles its own keys
       if ((e.metaKey || e.ctrlKey) && k.toLowerCase() === 'k') {
         e.preventDefault()
         if (!prOpen) setPaletteOpen((o) => !o)
@@ -254,7 +282,80 @@ export default function App() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [booted, paletteOpen, prOpen, selectedId, closePanel, stepPanel, hop, togglePlay, checkout])
+  }, [booted, paletteOpen, prOpen, tourIndex, selectedId, closePanel, stepPanel, hop, togglePlay, checkout])
+
+  // ── guided tour ──
+  const markTourSeen = useCallback(() => {
+    store.set('tour:seen', '1')
+    setTourSeen(true)
+  }, [])
+
+  const startTour = useCallback(() => {
+    markTourSeen()
+    stop()
+    setPrOpen(false)
+    setPaletteOpen(false)
+    setSelectedId(null)
+    setTouched(true)
+    setTourIndex(0)
+  }, [markTourSeen, stop])
+
+  const leaveTour = useCallback(() => {
+    setTourIndex(null)
+    setDemo(null)
+    setSelectedId(null)
+    setPaletteOpen(false)
+  }, [])
+
+  const endTour = useCallback(() => {
+    leaveTour()
+    travelTo(T_NOW, { duration: 1.2 })
+  }, [leaveTour, travelTo])
+
+  const replayAfterTour = useCallback(() => {
+    leaveTour()
+    play()
+  }, [leaveTour, play])
+
+  const tourNext = useCallback(() => {
+    if (tourIndex == null) return
+    if (tourIndex + 1 < TOUR.length) setTourIndex(tourIndex + 1)
+    else endTour()
+  }, [tourIndex, endTour])
+
+  const tourBack = useCallback(() => {
+    if (tourIndex) setTourIndex(tourIndex - 1)
+  }, [tourIndex])
+
+  // each step sets the stage itself, so Next and Back both land in the right state
+  useEffect(() => {
+    if (tourIndex == null) return
+    const step = TOUR[tourIndex]
+    // no stop() here: a step that doesn't travel lets the previous step's
+    // journey finish, and travelTo() replaces any journey still running
+    setPlaying(false)
+    setPrOpen(false)
+    if (step.id !== 'terminal') {
+      setPaletteOpen(false)
+      setDemo(null)
+    }
+    if (step.id !== 'commit') setSelectedId(null)
+
+    if (step.id === 'welcome' || step.id === 'contact' || step.id === 'finish') {
+      travelTo(T_NOW, { duration: 1.2 })
+    } else if (step.id === 'travel') {
+      const target = step.year ? step.year + 0.1 : T_START + (T_NOW - T_START) * 0.35
+      travelTo(target, { duration: 2.4, ease: 'power2.inOut' })
+    } else if (step.id === 'commit') {
+      const c = COMMIT[step.commit] ?? COMMITS[Math.floor(COMMITS.length * 0.7)]
+      setSelectedId(c.id)
+      sound.open()
+      travelTo(c.t, { duration: 0.9 })
+    } else if (step.id === 'terminal') {
+      setPaletteOpen(true)
+      setDemo({ cmd: step.command ?? 'whoami', id: Date.now() })
+    }
+  }, [tourIndex, travelTo])
 
   // ── terminal commands ──
   const actions = useMemo(
@@ -284,6 +385,7 @@ export default function App() {
         setPaletteOpen(false)
         openPR()
       },
+      tour: startTour,
       toggleSound,
       celebrate,
       shake: () => {
@@ -300,12 +402,15 @@ export default function App() {
         setBooted(false)
       },
     }),
-    [checkout, stop, travelTo, play, openPR, toggleSound, celebrate, setTime],
+    [checkout, stop, travelTo, play, openPR, startTour, toggleSound, celebrate, setTime],
   )
 
   const atHead = time >= T_NOW - 0.005
   const head = lastCommitAt(time)
   const selected = selectedId ? COMMIT[selectedId] : null
+  const touring = tourIndex != null
+  const showTourPrompt =
+    booted && !tourSeen && !touring && (introDone || touched) && !selectedId && !paletteOpen && !prOpen
 
   return (
     <div className={`app ${shaking ? 'is-shaking' : ''}`}>
@@ -320,7 +425,7 @@ export default function App() {
         onPalette={openPalette}
         onPR={openPR}
       />
-      <Hero time={time} playing={playing} onPlay={togglePlay} onPalette={openPalette} onPR={openPR} />
+      <Hero time={time} playing={playing} onPlay={togglePlay} onPalette={openPalette} onTour={startTour} />
       <GitGraph
         time={time}
         layout={layout}
@@ -341,8 +446,19 @@ export default function App() {
       />
 
       <CommitPanel commit={selected} onClose={closePanel} onStep={stepPanel} />
-      <CommandPalette open={paletteOpen} onClose={closePalette} actions={actions} />
+      <CommandPalette open={paletteOpen} onClose={closePalette} actions={actions} demo={demo} />
       <PullRequest open={prOpen} onClose={closePR} onMerged={celebrate} />
+
+      <TourPrompt show={showTourPrompt} onStart={startTour} onDismiss={markTourSeen} />
+      <Tour
+        step={touring ? TOUR[tourIndex] : null}
+        index={tourIndex}
+        eraTitle={ERAS[eraIndexAt(time)].title}
+        onNext={tourNext}
+        onBack={tourBack}
+        onEnd={endTour}
+        onReplay={replayAfterTour}
+      />
 
       <Cursor />
       {!booted && <BootSequence onDone={onBootDone} />}

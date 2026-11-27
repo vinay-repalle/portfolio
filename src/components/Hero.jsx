@@ -42,7 +42,7 @@ function PlayfulName({ text }) {
   )
 }
 
-export default function Hero({ time, playing, onPlay, onPalette, onPR }) {
+export default function Hero({ time, playing, onPlay, onPalette, onTour }) {
   const year = Math.floor(time + 1e-6)
   const frac = time - year
   const eraIdx = eraIndexAt(time)
@@ -63,11 +63,11 @@ export default function Hero({ time, playing, onPlay, onPalette, onPR }) {
           <button className="btn btn--accent" onClick={onPlay} data-cursor={playing ? 'pause' : 'play'}>
             {playing ? '❚❚ Pause' : '▶ Replay my story'}
           </button>
-          <button className="btn" onClick={onPalette} data-cursor="terminal">
-            <span className="accent mono">&gt;_</span> Terminal
+          <button className="btn hero__tour" onClick={onTour} data-cursor="tour">
+            <span className="accent">✦</span> Take the tour
           </button>
-          <button className="btn hero__pr" onClick={onPR} data-cursor="say hi">
-            Open a PR
+          <button className="btn hero__term" onClick={onPalette} data-cursor="terminal">
+            <span className="accent mono">&gt;_</span> Terminal
           </button>
         </div>
       </div>

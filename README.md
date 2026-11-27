@@ -26,11 +26,13 @@ Everything lives in **`src/data/portfolio.js`**; no component changes are needed
 | `commits`       | every moment on the graph: label, story, diff, stack, links         |
 | `eras`          | color themes + titles the site morphs through as you travel         |
 | `futureCommit`  | the ghost commit in the future (opens the contact form)             |
+| `tour`          | the guided tour: the "First time here?" card plus each step's text  |
 
 ## Interactions
 
 | input                   | does                                       |
 | ----------------------- | ------------------------------------------ |
+| "Take the tour" / `tour`| guided walkthrough that drives the site itself |
 | scroll / drag the graph | travel through time                        |
 | drag the bottom track   | scrub like a video                         |
 | `space`                 | play / pause the whole story               |
@@ -40,7 +42,7 @@ Everything lives in **`src/data/portfolio.js`**; no component changes are needed
 | `Ctrl/⌘ + K` or `/`     | open the terminal                          |
 | `Esc`                   | close whatever is open                     |
 
-Terminal commands: `help`, `whoami`, `git log`, `ls skills`, `goto 2021`, `play`, `now`,
+Terminal commands: `help`, `tour`, `whoami`, `git log`, `ls skills`, `goto 2021`, `play`, `now`,
 `git checkout <id>`, `contact`, `sound`, `clear`, plus a few hidden ones.
 
 ## Structure
@@ -62,6 +64,7 @@ src/
     CommitPanel, CommitArt ← commit detail + generative cover art
     CommandPalette         ← the terminal
     PullRequest            ← contact form disguised as a PR
+    Tour                   ← guided tour (spotlight + card) and the first-visit prompt
     Cursor                 ← custom cursor
   App.jsx                  ← owns `time`, the single source of truth
 ```

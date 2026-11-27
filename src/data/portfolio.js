@@ -328,6 +328,70 @@ export const commits = [
   },
 ]
 
+/**
+ * Guided tour, shown to first-time visitors and restartable from the hero
+ * button or the `tour` terminal command. Each step spotlights part of the
+ * site and *does* something there. Keep the ids (they pick the spotlight and
+ * the action); rewrite titles and text freely.
+ *   `code`  → wrap words in backticks to render them as code
+ *   {era}   → replaced with the era the visitor is currently in
+ *   commit  → (commit step) which commit to open, by id
+ *   command → (terminal step) what gets typed into the terminal
+ *   year    → (travel step) which year to travel back to
+ */
+export const tour = {
+  prompt: {
+    hint: 'hint: you look new here',
+    title: 'First time here?',
+    text: 'This portfolio is a little time machine. Take a 40-second tour of how it works?',
+  },
+  steps: [
+    {
+      id: 'welcome',
+      title: "Hi, I'm Vinay 👋",
+      text: "This isn't a normal portfolio — my career is a git repository, and you're about to time-travel through it. Let me show you around.",
+    },
+    {
+      id: 'graph',
+      title: 'My life, as a git graph',
+      text: 'Each line is a branch of my story — education, work and side-projects. Every dot is a commit: a project, a job or a milestone.',
+    },
+    {
+      id: 'travel',
+      year: 2021,
+      title: 'This is a time machine',
+      text: 'Scroll, drag the graph or this track, or use the arrow keys to travel. Watch — I’m taking you back a few years right now.',
+    },
+    {
+      id: 'eras',
+      title: 'Every era has its own look',
+      text: 'Notice everything changed colour? You’re now in “{era}”. The whole site re-themes itself as you move through my timeline.',
+    },
+    {
+      id: 'commit',
+      commit: 'pulse',
+      title: 'Check out any commit',
+      text: 'Click any dot to open it: the story behind it, what changed (as a diff), the stack and links. Arrow keys flip between commits.',
+    },
+    {
+      id: 'terminal',
+      command: 'whoami',
+      title: 'Prefer the keyboard?',
+      text: 'Press `Ctrl/⌘ K` anytime to open my terminal. Try `git log`, `goto 2021` — and hunt for a few hidden commands.',
+    },
+    {
+      id: 'contact',
+      title: 'The future is uncommitted',
+      text: 'Got an idea, a role or just a hello? Click this dashed commit — or “Open a PR” up top — and it lands straight in my inbox.',
+    },
+    {
+      id: 'finish',
+      title: "That's the tour!",
+      text: 'Scroll to travel, click to explore, press `space` to replay the whole story. Have fun poking around.',
+    },
+  ],
+}
+
 /** The ghost commit sitting in the future — clicking it opens the contact PR. */
 export const futureCommit = {
   label: 'your idea?',

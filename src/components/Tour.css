@@ -1,0 +1,229 @@
+/* ── guided tour overlay ── */
+.tour {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.tour.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* the hole: a transparent box whose huge shadow dims everything else */
+.tour__spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 1.5px rgb(var(--accent-rgb) / 0.9),
+    0 0 44px 6px rgb(var(--accent-rgb) / 0.22),
+    0 0 0 200vmax rgb(var(--bg-rgb) / 0.76);
+  pointer-events: none;
+  will-change: transform, width, height;
+}
+
+.tour__spot::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 1px solid rgb(var(--accent-rgb) / 0.6);
+  border-radius: inherit;
+  animation: spot-pulse 1.8s ease-out infinite;
+}
+
+.tour__spot.is-round {
+  border-radius: 999px;
+}
+
+.tour__spot.is-empty {
+  box-shadow: 0 0 0 200vmax rgb(var(--bg-rgb) / 0.8);
+}
+
+.tour__spot.is-empty::after {
+  display: none;
+}
+
+@keyframes spot-pulse {
+  from { inset: -2px; opacity: 0.9; }
+  to { inset: -16px; opacity: 0; }
+}
+
+/* the explanation card */
+.tour__card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: min(360px, calc(100vw - 24px));
+  padding: 0 18px 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgb(var(--surface-rgb) / 0.97);
+  box-shadow:
+    0 30px 80px -20px rgb(0 0 0 / 0.8),
+    0 0 0 1px rgb(var(--accent-rgb) / 0.1);
+  will-change: transform;
+}
+
+.tour__bar {
+  height: 3px;
+  margin: 0 -18px 14px;
+  background: var(--line);
+}
+
+.tour__bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  transition: width 0.5s var(--ease-out);
+}
+
+.tour__meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tour__body {
+  animation: rise 0.5s var(--ease-out) both;
+}
+
+.tour__title {
+  margin: 0 0 8px;
+  font-family: var(--font-serif);
+  font-size: 29px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.tour__text {
+  margin: 0 0 16px;
+  color: rgb(var(--ink-rgb) / 0.8);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.tour__text code {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgb(var(--accent-rgb) / 0.12);
+  color: var(--accent);
+  font: 500 12.5px var(--font-mono);
+  white-space: nowrap;
+}
+
+.tour__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tour__nav {
+  display: flex;
+  gap: 8px;
+}
+
+.tour__skip {
+  color: var(--muted);
+  font: 500 12px var(--font-mono);
+  transition: color 0.2s;
+}
+
+.tour__skip:hover {
+  color: var(--ink);
+}
+
+.tour__keys {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  color: var(--muted);
+  font: 400 11px var(--font-mono);
+}
+
+@media (hover: none), (max-width: 759px) {
+  .tour__keys {
+    display: none;
+  }
+}
+
+/* ── "First time here?" card ── */
+.tour-prompt {
+  position: fixed;
+  right: 24px;
+  bottom: 110px;
+  z-index: 45;
+  width: min(330px, calc(100vw - 24px));
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgb(var(--surface-rgb) / 0.94);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 30px 70px -24px rgb(0 0 0 / 0.75),
+    0 0 0 1px rgb(var(--accent-rgb) / 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(18px) scale(0.97);
+  transition:
+    opacity 0.35s,
+    transform 0.5s var(--ease-spring);
+}
+
+.tour-prompt.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+  transition-delay: 0.35s;
+}
+
+.tour-prompt__hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--accent);
+  font: 500 11px var(--font-mono);
+}
+
+.tour-prompt__title {
+  font-family: var(--font-serif);
+  font-size: 27px;
+  font-style: italic;
+  line-height: 1;
+}
+
+.tour-prompt p {
+  margin: 8px 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.tour-prompt__actions {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 759px) {
+  .tour-prompt {
+    right: 12px;
+    bottom: 96px;
+    left: 12px;
+    width: auto;
+  }
+}
