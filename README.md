@@ -3,7 +3,7 @@
 An interactive portfolio where a career is drawn as a **git graph you can time-travel through**.
 Scroll, drag or press play and the whole site re-themes itself era by era.
 
-> Demo build — all content is dummy data for now.
+**Live:** https://vinay-repalle.pages.dev · deployed on Cloudflare Pages (every push to `main` redeploys).
 
 ## Run it
 

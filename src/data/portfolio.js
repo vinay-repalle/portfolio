@@ -111,7 +111,10 @@ export const commits = [
     added: ['Time travel', 'A hidden terminal (try Ctrl/⌘ + K)'],
     removed: ['Boring scroll-down portfolios'],
     stack: ['React', 'Vite', 'GSAP', 'SVG', 'Canvas'],
-    links: [{ label: 'source', url: `${GH}/portfolio` }],
+    links: [
+      { label: 'live', url: 'https://vinay-repalle.pages.dev' },
+      { label: 'source', url: `${GH}/portfolio` },
+    ],
   },
 
   // ── education ───────────────────────────────────────────────────────────
