@@ -251,17 +251,37 @@
   stroke-width: 12;
 }
 
+.playhead > .playhead__line,
+.playhead > .playhead__glow {
+  opacity: calc(1 - var(--aurora, 0));
+}
+
+/* aurora eras: the same playhead, painted with every past era's color */
+.playhead__aurora {
+  opacity: var(--aurora, 0);
+}
+
+.playhead__aurora .playhead__line {
+  stroke: url(#aurora-v);
+  stroke-width: 2;
+}
+
+.playhead__aurora .playhead__glow {
+  stroke: url(#aurora-v);
+  stroke-opacity: 0.25;
+}
+
 .playhead-pill {
   position: absolute;
   transform: translateX(-50%);
   padding: 5px 10px;
   border-radius: 999px;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--bg);
   font: 600 11px var(--font-mono);
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 0 26px rgb(var(--accent-rgb) / 0.5);
+  box-shadow: 0 0 26px rgb(var(--accent-rgb) / calc(0.5 - 0.3 * var(--aurora, 0)));
 }
 
 /* hover tooltip */

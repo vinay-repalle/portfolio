@@ -2,12 +2,13 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import gsap from 'gsap'
 import { tour } from './data/portfolio.js'
 import { COMMIT, COMMITS, ERAS, T_NOW, T_START, U_NOW, eraIndexAt, lastCommitAt, tAt, uAt } from './lib/story.js'
-import { applyPalette, paletteAt } from './lib/theme.js'
+import { applyPalette, auroraNearAt, paletteAt } from './lib/theme.js'
 import { clamp, fmtMonth } from './lib/utils.js'
 import { sound } from './lib/sound.js'
 import { useLayout, useReducedMotion } from './lib/hooks.js'
 import BootSequence from './components/BootSequence.jsx'
 import WarpField from './components/WarpField.jsx'
+import AuroraSky from './components/AuroraSky.jsx'
 import Cursor from './components/Cursor.jsx'
 import HUD from './components/HUD.jsx'
 import Hero from './components/Hero.jsx'
@@ -419,6 +420,7 @@ export default function App() {
 
   return (
     <div className={`app ${shaking ? 'is-shaking' : ''}`}>
+      {auroraNearAt(time) && <AuroraSky />}
       <WarpField velocityRef={velocityRef} apiRef={warpApi} />
 
       <HUD

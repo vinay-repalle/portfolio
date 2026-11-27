@@ -10,6 +10,37 @@ const BLEND_U = 0.045 // max blend width, as a share of the timeline
 const mix = (a, b, p) => a.map((v, i) => Math.round(v + (b[i] - v) * p))
 const smooth = (p) => p * p * (3 - 2 * p)
 
+function hue([r, g, b]) {
+  const max = Math.max(r, g, b)
+  const d = max - Math.min(r, g, b)
+  if (!d) return 0
+  const h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4
+  return h * 60
+}
+
+// Colors for `aurora` eras: every other era's accent, ordered around the
+// colour wheel and starting after the widest hue gap, so neighbouring stops
+// always blend cleanly (e.g. no muddy amber → green jump).
+export const AURORA = (() => {
+  const stops = ERAS.filter((e) => !e.aurora)
+    .map((e) => ({ hex: e.accent, h: hue(e.rgb.accent) }))
+    .sort((a, b) => a.h - b.h)
+  let gap = -1
+  let start = 0
+  stops.forEach((s, i) => {
+    const d = (stops[(i + 1) % stops.length].h - s.h + 360) % 360
+    if (d > gap) [gap, start] = [d, (i + 1) % stops.length]
+  })
+  return [...stops.slice(start), ...stops.slice(0, start)].map((s) => s.hex)
+})()
+const AURORA_STOPS = AURORA.join(', ')
+
+/** True inside an aurora era or the era just before it (where it fades in). */
+export function auroraNearAt(t) {
+  const i = eraIndexAt(t)
+  return Boolean(ERAS[i].aurora || ERAS[i + 1]?.aurora)
+}
+
 export function paletteAt(t) {
   const i = eraIndexAt(t)
   const cur = ERAS[i]
@@ -24,7 +55,10 @@ export function paletteAt(t) {
   const bg = pick('bg')
   const ink = pick('ink')
   const accent = pick('accent')
+  // 0..1: how much of an aurora era is showing (cross-fades like the colors)
+  const aurora = (cur.aurora ? 1 - p : 0) + (next?.aurora ? p : 0)
   return {
+    aurora,
     bg,
     ink,
     accent,
@@ -44,6 +78,8 @@ export function applyPalette(pal) {
     s.setProperty(`--${k}`, `rgb(${rgb})`)
     s.setProperty(`--${k}-rgb`, rgb)
   }
+  s.setProperty('--aurora', pal.aurora.toFixed(3))
+  if (!s.getPropertyValue('--aurora-stops')) s.setProperty('--aurora-stops', AURORA_STOPS)
   meta ??= document.querySelector('meta[name="theme-color"]')
   meta?.setAttribute('content', `rgb(${pal.bg.join(',')})`)
 }

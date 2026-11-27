@@ -3,6 +3,7 @@ import { profile } from '../data/portfolio.js'
 import { BRANCH, COMMITS } from '../lib/story.js'
 import { fmtDate } from '../lib/utils.js'
 import CommitArt from './CommitArt.jsx'
+import Avatar from './Avatar.jsx'
 import './CommitPanel.css'
 
 // "git checkout <hash>" — the detail view for one commit, styled like git show.
@@ -51,7 +52,8 @@ function CommitPanel({ commit, onClose, onStep }) {
                   <span className="panel__hash">commit {c.fullHash}</span>
                 </div>
                 <div>
-                  Author: {profile.name} &lt;{profile.handle}@users.noreply.github.com&gt;
+                  Author: <Avatar size={14} className="panel__avatar" />
+                  {profile.name} &lt;{profile.handle}@users.noreply.github.com&gt;
                 </div>
                 <div>Date:&nbsp;&nbsp; {fmtDate(c.date)}</div>
                 <div className="panel__msg">{c.message}</div>

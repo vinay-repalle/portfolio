@@ -14,6 +14,11 @@
   --line-rgb: 34 44 43;
   --muted: rgb(121 145 133);
   --muted-rgb: 121 145 133;
+  /* the accent as a paint for surfaces: solid, cross-fading to the aurora
+     gradient (every past era's color) in aurora eras. --aurora is 0..1. */
+  --accent-fill:
+    linear-gradient(rgb(var(--accent-rgb) / calc(1 - var(--aurora, 0))) 0 0),
+    linear-gradient(110deg, var(--aurora-stops, var(--accent), var(--accent)));
 
   --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -123,8 +128,34 @@ svg :focus-visible {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(1100px 620px at 88% -12%, rgb(var(--accent-rgb) / 0.13), transparent 62%),
-    radial-gradient(900px 520px at -12% 112%, rgb(var(--accent-rgb) / 0.08), transparent 60%);
+    radial-gradient(1100px 620px at 88% -12%, rgb(var(--accent-rgb) / calc(0.13 * (1 - var(--aurora, 0)))), transparent 62%),
+    radial-gradient(900px 520px at -12% 112%, rgb(var(--accent-rgb) / calc(0.08 * (1 - var(--aurora, 0)))), transparent 60%);
+}
+
+/* aurora eras: slow drifting glows in every past era's color (replaces the
+   glow above, which would only be a grey haze with a white accent) */
+.aurora-sky {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: var(--aurora, 0);
+}
+
+.aurora-sky i {
+  position: absolute;
+  width: var(--s);
+  aspect-ratio: 1.6;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(var(--c) / 0.2), transparent);
+  animation: aurora-drift var(--d) ease-in-out var(--delay) infinite alternate;
+  will-change: transform;
+}
+
+@keyframes aurora-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(var(--dx), var(--dy), 0) scale(1.15); }
 }
 
 /* film grain */
@@ -191,7 +222,7 @@ svg :focus-visible {
   transform: scale(0.97);
 }
 .btn--accent {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--bg);
   border-color: transparent;
   font-weight: 600;

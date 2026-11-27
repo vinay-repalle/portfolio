@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { futureCommit } from '../data/portfolio.js'
 import { BRANCH, BRANCHES, COMMIT, COMMITS, MAIN, T_END, T_NOW, T_START, YEARS, lastCommitAt, tAt, uAt } from '../lib/story.js'
+import { AURORA } from '../lib/theme.js'
 import { clamp, fmtDate, fmtMonth } from '../lib/utils.js'
 import './GitGraph.css'
 
@@ -129,6 +130,12 @@ export default function GitGraph({ time, layout, selectedId, showHint, onSelect,
             <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
               <line x1="0" y1="0" x2="0" y2="7" className="graph__hatch" />
             </pattern>
+            {/* playhead paint in aurora eras (userSpace: a vertical line has no bbox width) */}
+            <linearGradient id="aurora-v" gradientUnits="userSpaceOnUse" x1="0" y1={PAD_T - 24} x2="0" y2={h - 30}>
+              {AURORA.map((c, i) => (
+                <stop key={c} offset={i / Math.max(1, AURORA.length - 1)} stopColor={c} />
+              ))}
+            </linearGradient>
           </defs>
 
           {/* year grid */}
@@ -245,6 +252,10 @@ export default function GitGraph({ time, layout, selectedId, showHint, onSelect,
           <g className="playhead" transform={`translate(${px} 0)`} aria-hidden="true">
             <line className="playhead__glow" y1={PAD_T - 24} y2={h - 30} />
             <line className="playhead__line" y1={PAD_T - 24} y2={h - 30} />
+            <g className="playhead__aurora">
+              <line className="playhead__glow" y1={PAD_T - 24} y2={h - 30} />
+              <line className="playhead__line" y1={PAD_T - 24} y2={h - 30} />
+            </g>
           </g>
         </svg>
       )}

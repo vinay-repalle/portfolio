@@ -35,7 +35,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--bg);
   box-shadow: 0 0 0 0 rgb(var(--accent-rgb) / 0.2);
   transition:
@@ -94,7 +94,17 @@
 .track__fill {
   left: 0;
   background: linear-gradient(90deg, rgb(var(--accent-rgb) / 0.15), var(--accent));
-  box-shadow: 0 0 14px rgb(var(--accent-rgb) / 0.4);
+  box-shadow: 0 0 14px rgb(var(--accent-rgb) / calc(0.4 - 0.25 * var(--aurora, 0)));
+}
+
+/* aurora eras: the progress bar becomes every past era's color */
+.track__fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--aurora-stops, transparent, transparent));
+  opacity: var(--aurora, 0);
 }
 
 .track__future {

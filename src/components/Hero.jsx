@@ -1,6 +1,8 @@
 import { profile } from '../data/portfolio.js'
 import { ERAS, eraIndexAt, statsAt } from '../lib/story.js'
+import { auroraNearAt } from '../lib/theme.js'
 import { fmtMonth } from '../lib/utils.js'
+import Avatar from './Avatar.jsx'
 import './Hero.css'
 
 const DIGITS = '0123456789'.split('')
@@ -8,19 +10,18 @@ const pad2 = (n) => String(n).padStart(2, '0')
 
 /** Each digit is a vertical strip of 0-9 that rolls into place. */
 function Odometer({ value }) {
+  const digits = String(value).split('')
   return (
-    <span className="odo">
-      {String(value)
-        .split('')
-        .map((d, i) => (
-          <span className="odo__col" key={i}>
-            <span className="odo__strip" style={{ transform: `translateY(${-Number(d) * 10}%)` }}>
-              {DIGITS.map((n) => (
-                <span key={n}>{n}</span>
-              ))}
-            </span>
+    <span className="odo" style={{ '--n': digits.length }}>
+      {digits.map((d, i) => (
+        <span className="odo__col" key={i} style={{ '--i': i }}>
+          <span className="odo__strip" style={{ transform: `translateY(${-Number(d) * 10}%)` }}>
+            {DIGITS.map((n) => (
+              <span key={n}>{n}</span>
+            ))}
           </span>
-        ))}
+        </span>
+      ))}
     </span>
   )
 }
@@ -48,12 +49,19 @@ export default function Hero({ time, playing, onPlay, onPalette, onTour }) {
   const eraIdx = eraIndexAt(time)
   const era = ERAS[eraIdx]
   const { commitCount, active } = statsAt(time)
+  const fill = `inset(${(1 - frac) * 100}% 0 0 0)`
+  // mounted only in/just before an aurora era; opacity follows --aurora
+  const auroraNear = auroraNearAt(time)
 
   return (
     <section className="hero">
       <div className="hero__intro">
         <div className="hero__status">
-          <span className="pulse-dot" /> {profile.status}
+          <span className="hero__avatar">
+            <Avatar size={40} />
+            <span className="pulse-dot hero__online" />
+          </span>
+          {profile.status}
         </div>
         <PlayfulName text={profile.name} />
         <p className="hero__role">
@@ -81,9 +89,15 @@ export default function Hero({ time, playing, onPlay, onPalette, onTour }) {
             <Odometer value={year} />
           </span>
           {/* the solid copy fills up from the bottom as the months pass */}
-          <span className="year__fill" aria-hidden="true" style={{ clipPath: `inset(${(1 - frac) * 100}% 0 0 0)` }}>
+          <span className="year__fill" aria-hidden="true" style={{ clipPath: fill }}>
             <Odometer value={year} />
           </span>
+          {/* aurora eras: the same fill, painted with every past era's color */}
+          {auroraNear && (
+            <span className="year__fill year__aurora" aria-hidden="true" style={{ clipPath: fill }}>
+              <Odometer value={year} />
+            </span>
+          )}
         </div>
         <div className="hero__era-title" key={`t${eraIdx}`}>
           {era.title}

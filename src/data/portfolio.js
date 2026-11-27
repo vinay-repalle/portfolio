@@ -541,6 +541,8 @@ export const futureCommit = {
 /**
  * Eras re-theme the whole site as you travel. Colors blend smoothly
  * into each era just before it starts.
+ * aurora: true fills the big year with a moving gradient made of every
+ * other era's accent ("right now" = everything so far).
  */
 export const eras = [
   { at: '2020-01', title: 'Hello, World', subtitle: 'school’s out, curiosity compiles', bg: '#04090a', ink: '#d9ffe9', accent: '#39ff88' },
@@ -549,5 +551,5 @@ export const eras = [
   { at: '2025-03', title: 'Builder season', subtitle: 'shipping real things for real users', bg: '#140d06', ink: '#fff1dc', accent: '#ffb547' },
   { at: '2026-05', title: 'Merged & graduated', subtitle: 'degree done, next branch loading', bg: '#160810', ink: '#ffe4ee', accent: '#ff5c8a' },
   { at: '2026-08', title: 'Ampera, Chennai', subtitle: 'AI, agents & production habits', bg: '#04161a', ink: '#dcfbff', accent: '#2de2e6' },
-  { at: '2026-11-15', title: 'Right now', subtitle: 'HEAD → main, still compiling', bg: '#0a0b07', ink: '#f4f8e6', accent: '#d4ff3a' },
+  { at: '2026-11-15', title: 'Right now', subtitle: 'HEAD → main, still compiling', bg: '#0a0b0e', ink: '#e7e9f0', accent: '#f1f3f8', aurora: true },
 ]

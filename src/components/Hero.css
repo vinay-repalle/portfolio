@@ -26,6 +26,28 @@
   animation: pulse 2s infinite;
 }
 
+/* generated identicon, with the status dot as an "online" badge */
+.hero__avatar {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.hero__avatar .avatar {
+  display: block;
+  border-radius: 9px;
+  box-shadow: 0 0 0 1px rgb(var(--accent-rgb) / 0.25);
+}
+
+.hero__online {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--bg);
+}
+
 @keyframes pulse {
   0% { box-shadow: 0 0 0 0 rgb(var(--accent-rgb) / 0.6); }
   70% { box-shadow: 0 0 0 10px rgb(var(--accent-rgb) / 0); }
@@ -98,8 +120,9 @@
   font-weight: 700;
   letter-spacing: -0.06em;
   line-height: 1;
-  /* glow lives on the parent so the digit columns' overflow can't clip it */
-  filter: drop-shadow(0 0 28px rgb(var(--accent-rgb) / 0.3));
+  /* glow lives on the parent so the digit columns' overflow can't clip it;
+     it dims in aurora eras so the gradient isn't washed out in white */
+  filter: drop-shadow(0 0 28px rgb(var(--accent-rgb) / calc(0.3 - 0.18 * var(--aurora, 0))));
 }
 
 .year__outline {
@@ -112,6 +135,30 @@
   position: absolute;
   inset: 0;
   color: var(--accent);
+  opacity: calc(1 - var(--aurora, 0));
+}
+
+/* "Right now" = everything so far: a slow drift through every past era's accent.
+   Text inside the rolling (transformed) strips can't be clipped from a parent,
+   so each digit paints its own slice of one gradient that spans the whole
+   number (--n columns, --i = this column; columns share the widest digit's width). */
+.year__aurora {
+  opacity: var(--aurora, 0);
+}
+
+.year__aurora .odo__strip span {
+  --k: 2; /* gradient is k× the number's width; it drifts across the rest */
+  color: transparent;
+  background: linear-gradient(90deg, var(--aurora-stops, var(--accent), var(--accent))) no-repeat;
+  background-size: calc(var(--n) * var(--k) * 100%) 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: aurora 16s ease-in-out infinite alternate;
+}
+
+@keyframes aurora {
+  from { background-position: calc(var(--i) / (var(--n) * var(--k) - 1) * 100%) 0; }
+  to { background-position: calc((var(--i) + var(--n) * (var(--k) - 1)) / (var(--n) * var(--k) - 1) * 100%) 0; }
 }
 
 .odo {
