@@ -22,16 +22,15 @@ export const profile = {
   email: 'repallevinay13@gmail.com',
   socials: [
     { label: 'GitHub', url: 'https://github.com/vinay-repalle' },
-    { label: 'GitHub (Ampera)', url: 'https://github.com/Vinay-Ampera' },
     // { label: 'LinkedIn', url: '' },   // add when ready
     // { label: 'Resume', url: '' },     // add the PDF link when ready
   ],
   skills: [
     { group: 'languages', items: ['Python', 'JavaScript', 'Java', 'C', 'SQL'] },
-    { group: 'frontend', items: ['React', 'Next.js', 'Vite', 'Tailwind CSS', 'HTML / CSS'] },
+    { group: 'frontend', items: ['React', 'Next.js', 'Vite', 'Tailwind CSS', 'PWAs', 'HTML / CSS'] },
     { group: 'backend', items: ['Node.js', 'Express', 'FastAPI', 'Socket.IO', 'REST · JWT · OAuth'] },
     { group: 'data', items: ['MongoDB', 'MySQL', 'PostgreSQL', 'pgvector'] },
-    { group: 'ai', items: ['LangGraph', 'RAG', 'Gemini API', 'Sentence Transformers'] },
+    { group: 'genai', items: ['Generative AI', 'LLM apps', 'RAG', 'AI agents', 'LangGraph', 'Gemini API', 'Sentence Transformers'] },
     { group: 'tools', items: ['Git & GitHub', 'GitHub Actions', 'Docker', 'Linux', 'Judge0'] },
   ],
 }
@@ -65,7 +64,6 @@ export const branches = [
  * added / removed → rendered as a diff in the detail panel
  */
 const GH = 'https://github.com/vinay-repalle'
-const GH_WORK = 'https://github.com/Vinay-Ampera'
 
 export const commits = [
   // ── main ────────────────────────────────────────────────────────────────
@@ -319,22 +317,38 @@ export const commits = [
     ],
   },
   {
-    id: 'tools',
-    hash: '7001ab3',
+    id: 'gate-tracker',
+    hash: '6a7e0b1',
     branch: 'side',
-    date: '2026-11-20',
-    kind: 'life',
-    label: 'Tools',
-    title: 'Small tools: job alerts & a GATE tracker',
-    message: 'chore: automate the boring stuff',
+    date: '2026-11-17',
+    kind: 'project',
+    label: 'GATE PWA',
+    title: 'GATE 2027 Tracker — an installable study PWA',
+    message: 'feat: syllabus tree + progress, installable and offline',
     summary:
-      'Two small utilities: a daily job-alert bot (GitHub Actions collects openings, hides scam-looking posts, updates an installable web app and emails the best matches) and a GATE 2027 syllabus progress tracker.',
-    added: ['Daily job alerts by email', 'Syllabus progress tracker'],
-    removed: [],
-    stack: ['Python', 'GitHub Actions', 'JavaScript'],
+      'A progressive web app for GATE 2027 (ECE) preparation: the full syllabus as a tree, with progress tracking for every topic. Installable on a phone, works offline, and syncs progress to the cloud.',
+    added: ['Syllabus tree with per-topic progress', 'Installable, offline-ready PWA', 'Cloud sync with sign-in'],
+    removed: ['Syllabus PDFs and sticky notes'],
+    stack: ['JavaScript', 'PWA', 'Service Worker', 'Firebase', 'Python'],
+    links: [{ label: 'source', url: `${GH}/gate-v` }],
+  },
+  {
+    id: 'job-alerts',
+    hash: '70b5ea2',
+    branch: 'side',
+    date: '2026-11-23',
+    kind: 'project',
+    label: 'Job alerts',
+    title: 'QA Job Alerts — a daily job-hunting PWA',
+    message: 'feat: fresh openings every morning, scams filtered out',
+    summary:
+      'Every day a GitHub Actions workflow collects QA, support and validation job openings from company career pages and Google Jobs, keeps the ones that match location and experience, hides scam-looking posts, then updates an installable PWA and emails the best new matches.',
+    added: ['Daily scheduled job search', 'Scam filtering and shift flags', 'Installable PWA + email digest'],
+    removed: ['Refreshing job boards by hand'],
+    stack: ['Python', 'GitHub Actions', 'JavaScript', 'PWA', 'GitHub Pages'],
     links: [
-      { label: 'job alerts', url: `${GH}/job_search` },
-      { label: 'GATE tracker', url: `${GH}/gate-v` },
+      { label: 'open app', url: 'https://vinay-repalle.github.io/job_search/' },
+      { label: 'source', url: `${GH}/job_search` },
     ],
   },
   {
@@ -350,7 +364,7 @@ export const commits = [
       'An Android app that shows a different home-screen wallpaper depending on how you unlocked the phone — fast (fingerprint or face) or slow (PIN or pattern) — by timing the unlock. No internet, no accounts, no ads.',
     added: ['Per-unlock wallpapers', 'Activity log you can export'],
     removed: [],
-    stack: ['Kotlin', 'Android'],
+    stack: ['Android'],
     links: [{ label: 'source', url: `${GH}/UnlockWall` }],
   },
 
@@ -383,7 +397,6 @@ export const commits = [
     added: [],
     removed: [],
     stack: ['React', 'FastAPI', 'LangGraph', 'Gemini'],
-    links: [{ label: 'source', url: `${GH_WORK}/ai-tutor` }],
   },
   {
     id: 'ragforge',
@@ -414,7 +427,6 @@ export const commits = [
     added: [],
     removed: [],
     stack: ['Python', 'PostgreSQL', 'Redis', 'Docker'],
-    links: [{ label: 'source', url: `${GH_WORK}/Sentinel-AI` }],
   },
   {
     id: 'pramaan',
@@ -430,7 +442,6 @@ export const commits = [
     added: ['LangGraph multi-agent pipeline', 'Role-based access with 2-step verification', 'Prometheus + Grafana monitoring'],
     removed: [],
     stack: ['Python', 'LangGraph', 'PostgreSQL', 'pgvector', 'Docker', 'Grafana'],
-    links: [{ label: 'source', url: `${GH_WORK}/Loan_Pre_Underwriting_Copilot` }],
   },
   {
     id: 'recruitment',
